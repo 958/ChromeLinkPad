@@ -1,0 +1,11 @@
+{
+	"menu_AddLinkpadLink": {
+		"message": "Save to &Link Pad"
+	},
+	"menu_AddLinkpadPage": {
+		"message": "Save this page to &Link Pad"
+	},
+	"menu_AddLinkpadPageAndClose": {
+		"message": "Save this page to Link Pad and &close tab"
+	}
+}
