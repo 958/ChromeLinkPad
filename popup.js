@@ -95,13 +95,9 @@ EntryManager.prototype = {
             else
                 item.classList.remove('hidden');
         }
-        for (var i = 0; i < this._items.length; i++) {
-            var item = this._items[i];
-            if (item.classList.contains(this._CURRENT_CLASS)) {
-                item.classList.remove(this._CURRENT_CLASS);
-                break;
-            }
-        }
+        var cur = this.currentItem;
+        if (cur)
+            cur.classList.remove(this._CURRENT_CLASS);
     },
     select: function(increment) {
         var cur = this.currentIndex;
