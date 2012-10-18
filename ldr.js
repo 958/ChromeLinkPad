@@ -22,7 +22,7 @@
 		addLinkPad: function(e){
 			var item = JSON.parse(e.data);
 			if (item)
-				chrome.extension.sendRequest(
+				chrome.extension.sendMessage(
 					{
 						action: 'link.add',
 						text: item.text,

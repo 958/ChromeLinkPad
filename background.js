@@ -367,7 +367,7 @@ var actions = {
     }
 };
 
-chrome.extension.onRequest.addListener(function(req, sender, res){
+chrome.extension.onMessage.addListener(function(req, sender, res){
     actions.execute(req, sender, res);
 });
 
@@ -395,7 +395,7 @@ var contextMenus = {
                                     var link = document.querySelector('a[href="'+url+'"]');
                                     if (link)
                                         req.text = link.innerText || link.textContent;
-                                    chrome.extension.sendRequest(req);
+                                    chrome.extension.sendMessage(req);
                                 }.toString() + ')("' + info.linkUrl + '")'
                             },function(res){
                                 // コールバック時に登録されていない場合は、textを指定せずに登録

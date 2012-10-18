@@ -9,7 +9,7 @@
 			if(key && !('selectionStart' in e.target && e.target.disabled != true)) {
 				var item = document.querySelector('#current-entry .entry-title-link');
 				if(!item) return;
-				chrome.extension.sendRequest(
+				chrome.extension.sendMessage(
 					{
 						action: 'link.add',
 						text: item.text,

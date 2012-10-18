@@ -64,7 +64,7 @@ input[type=button]:active {
     border: 1px solid rgba(255,255,255,0); /* transparent white */
 /*  -webkit-transition: 0.3s;*/
 }
-#entries>li:hover {
+#entries>li:hover, #entries>li.current {
     background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
     border-color: hsl(0,0%,85%);
     background-color: hsl(0,0%,90%);
@@ -81,7 +81,7 @@ input[type=button]:active {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-#entries>li:hover>a {
+#entries>li:hover>a, #entries>li.current>a {
     color: black;
 }
 #entries>li.hidden {

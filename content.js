@@ -1,7 +1,7 @@
 (function(){
 	document.addEventListener('ChromeLinkPad.addTargetLink', function(e){
 		var link = e.target || document.querySelector('a:active');
-		chrome.extension.sendRequest(
+		chrome.extension.sendMessage(
 			{
 				action: 'link.add',
 				text: link.innerText || link.textContent,
@@ -12,7 +12,7 @@
 	document.addEventListener('ChromeLinkPad.addActiveLink', function(e){
 		var link = document.querySelector('a:focus');
 		if (!link) return;
-		chrome.extension.sendRequest(
+		chrome.extension.sendMessage(
 			{
 				action: 'link.add',
 				text: link.innerText || link.textContent,
@@ -21,7 +21,7 @@
 		);
 	}, false);
 	document.addEventListener('ChromeLinkPad.addCurrentPage', function(e){
-		chrome.extension.sendRequest(
+		chrome.extension.sendMessage(
 			{
 				action: 'link.add',
 				text: document.title,
@@ -30,7 +30,7 @@
 		);
 	}, false);
 	document.addEventListener('ChromeLinkPad.addCurrentPageAndClose', function(e){
-		chrome.extension.sendRequest(
+		chrome.extension.sendMessage(
 			{
 				action: 'link.add',
 				text: document.title,
@@ -38,7 +38,7 @@
 			},
 			function(res) {
 				if (res.status == 'success')
-					chrome.extension.sendRequest({ action: 'tab.current-close' });
+					chrome.extension.sendMessage({ action: 'tab.current-close' });
 			}
 		);
 	}, false);

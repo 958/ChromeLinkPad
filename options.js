@@ -4,7 +4,7 @@ window.addEventListener('load', function(e){
         elm.checked = bg.config[elm.id];
         elm.addEventListener('click', function(e){
             bg.config[e.target.id] = e.target.checked;
-            chrome.extension.sendRequest({
+            chrome.extension.sendMessage({
                 action: 'config.save'
             });
         }, false);
@@ -16,7 +16,7 @@ window.addEventListener('load', function(e){
         elm.addEventListener('change', function(e){
             bg.config[e.target.id] = e.target.value;
             output.textContent = e.target.value;
-            chrome.extension.sendRequest({
+            chrome.extension.sendMessage({
                 action: 'config.save'
             });
         }, false);
@@ -44,7 +44,7 @@ window.addEventListener('load', function(e){
         input.value = item;
         input.addEventListener('input',function(e){
             bg.config.ExcludeURLs[index] = input.value;
-            chrome.extension.sendRequest({
+            chrome.extension.sendMessage({
                 action: 'config.save'
             });
         }, false);
@@ -56,7 +56,7 @@ window.addEventListener('load', function(e){
             bg.config.ExcludeURLs = bg.config.ExcludeURLs.filter(function(item, i){
                 return (i != index);
             });
-            chrome.extension.sendRequest({
+            chrome.extension.sendMessage({
                 action: 'config.save'
             });
         }, false);
@@ -71,7 +71,7 @@ window.addEventListener('load', function(e){
         if (url) {
             AddExcludeURL(text.value, bg.config.ExcludeURLs.length);
             bg.config.ExcludeURLs.push(url);
-            chrome.extension.sendRequest({
+            chrome.extension.sendMessage({
                 action: 'config.save'
             });
             text.value = '';
@@ -81,7 +81,7 @@ window.addEventListener('load', function(e){
 
     document.getElementById('ResetLinks').addEventListener('click', function(e) {
         if (confirm('Are you sure you want to delete all of the saved links ?')) {
-            chrome.extension.sendRequest({
+            chrome.extension.sendMessage({
                 action: 'link.init'
             });
         }
@@ -89,7 +89,7 @@ window.addEventListener('load', function(e){
 
     document.getElementById('ResetConfig').addEventListener('click', function(e) {
         if (confirm('Are sure you want to delete this config ?')) {
-            chrome.extension.sendRequest({
+            chrome.extension.sendMessage({
                 action: 'config.init'
             }, function(){
                 location.reload();
