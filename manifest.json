@@ -1,12 +1,13 @@
 {
-  "name": "Chrome Link Pad",
-  "version": "0.2.0",
+  "manifest_version": 2,
+  "name": "Link Pad",
+  "version": "0.3.0",
   "default_locale": "en_US",
   "description": "Netscape Link Pad clone",
   "browser_action": {
     "default_icon": "icon.png",
-    "default_title": "Chrome Link Pad",
-    "popup": "popup.html"
+    "default_title": "Link Pad",
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {
@@ -24,14 +25,15 @@
       "matches": [ "http://reader.livedoor.com/reader/*", "http://fastladder.com/reader/*" ]
     }
   ],
-  "background_page": "background.html",
+  "background": {
+     "page": "background.html"
+  },
   "icons": {
     "128": "app_icon_128.png",
     "16": "app_icon_16.png",
     "32": "app_icon_32.png",
     "48": "app_icon_48.png"
   },
-  "minimum_chrome_version": "6.0.472.53",
   "options_page": "options.html",
   "permissions": [
     "contextMenus",
