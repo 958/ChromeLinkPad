@@ -96,8 +96,10 @@ EntryManager.prototype = {
                 item.classList.remove('hidden');
         }
         var cur = this.currentItem;
-        if (cur)
+        if (cur) {
             cur.classList.remove(this._CURRENT_CLASS);
+            window.scrollTo(0, 0);
+        }
     },
     select: function(increment) {
         var cur = this.currentIndex;
@@ -115,6 +117,7 @@ EntryManager.prototype = {
             break;
         }
         this._items[cur].classList.add(this._CURRENT_CLASS);
+        this._items[cur].scrollIntoView(false);
     },
     openCurrent: function(focus, remove) {
         var cur = this.currentItem;
@@ -184,20 +187,29 @@ window.addEventListener('load', function(e){
         em.filter(query.value.trim());
     }, false);
     query.addEventListener('keydown', function(e) {
+        var noDefault = false;
         switch (e.keyIdentifier) {
             case 'Down':
                 em.select(+1);
+                noDefault = true;
                 break;
             case 'Up':
                 em.select(-1);
+                noDefault = true;
                 break;
             case 'U+007F':  // Delete
-                em.removeCurrent();
+                if (e.shiftKey) {
+                    em.removeCurrent();
+                    noDefault = true;
+                }
                 break;
             case 'Enter':
                 em.openCurrent(e.shiftKey, !e.ctrlKey);
+                noDefault = true;
                 break;
         }
+        if (noDefault)
+            e.preventDefault();
     }, false);
 
     if (bg.config.AddToClose) {
