@@ -7,17 +7,16 @@
 body{
 }
 #wrap {
-    width: 600px;
+    /*width: 600px;*/
     margin: 0 auto;
 }
 h1 {
     border-radius: 3px;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(188,200,144,1)), to(rgba(157,174,91,1)));
+    background-color: rgba(188,200,144,1);
     text-align: center;
     color: white;
     text-shadow: 1px 1px 1px #617122;
     padding: 0.5em;
-    -webkit-box-shadow: 1px 1px 1px gray;
 }
 h2 {
     font-size: 100%;
@@ -27,7 +26,6 @@ h2 {
 div.group {
     border-radius: 3px;
     border: 1px solid #A1B162;
-    -webkit-box-shadow: 1px 1px 1px silver;
     padding: 1em;
     margin-bottom: 20px;
 }
@@ -97,28 +95,6 @@ input.url {
         <div class="item">
           <input type="checkbox" id="DocumentMenuAddClose"><label for="DocumentMenuAddClose">Save this page to Link Pad and close tab</label>
         </div>
-      </fieldset>
-    </div>
-    <div id="autoSave" class="group">
-      <h2 id="TitleAutoSave">Auto save</h2>
-      <fieldset class="item">
-        <legend>
-          <input type="checkbox" id="AutoSave"><label for="AutoSave">The tab by which definite-period-of-time neglect is carried out is saved automatically, and is closed.</label>
-        </legend>
-        <div class="item">
-          <label for="AutoSaveTime">Auto save time:</label>
-          <input type="range" id="AutoSaveTime" max="60" min="1" step="1"> <span class="value" id="AutoSaveTime_val" /> [minute(s)]
-        </div>
-        <div class="item">
-         <input type="checkbox" id="AutoSaveDupplicateClose"><label for="AutoSaveDupplicateClose">Close tab that is already saved.</label>
-        </div>
-        <fieldset class="item">
-          <legend id="ExcludeURL">
-            Exclude URLs (prefix)
-          </legend>
-          <ul id="ExcludeURLs" />
-          <input type="text" id="ExcludeURL_text" class="url" value="" /><button id="ExcludeURL_add">Add</button>
-        </fieldset>
       </fieldset>
     </div>
     <div id="general" class="group">

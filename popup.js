@@ -25,7 +25,7 @@ EntryManager.prototype = {
         );
     },
     _remove: function(link) {
-        chrome.extension.sendMessage({
+        chrome.runtime.sendMessage({
             action: 'link.del',
             url: link.href
         });
@@ -34,7 +34,7 @@ EntryManager.prototype = {
     },
     add: function(item, cb) {
         var self = this;
-        chrome.extension.sendMessage(
+        chrome.runtime.sendMessage(
         {
             action: 'link.add',
             text: item.text,
@@ -48,6 +48,10 @@ EntryManager.prototype = {
         });
     },
     _addElm: function(item) {
+        const faviconUrl = new URL(chrome.runtime.getURL("/_favicon/"));
+        faviconUrl.searchParams.set("pageUrl", item.url);
+        faviconUrl.searchParams.set("size", "16");
+
         var self = this;
         var entry = document.createElement('li');
         var link = document.createElement('a');
@@ -55,7 +59,7 @@ EntryManager.prototype = {
         link.textContent = item.text || item.url;
         link.title = item.url;
         link.target = '_blank';
-        link.style.backgroundImage = 'url(chrome://favicon/' + item.url + ')';
+        link.style.backgroundImage = 'url(' + faviconUrl + ')';
 
         link.addEventListener('click', function(e){
             var target = e.target;
@@ -163,72 +167,91 @@ EntryManager.prototype = {
 };
 
 window.addEventListener('load', function(e){
-    var bg = chrome.extension.getBackgroundPage();
+    chrome.runtime.sendMessage({ action: 'link.get' }, (res) => {
+        const links = res.links || [];
+        const config = res.config || {};
+        var em = new EntryManager('entries', res.links, res.config);
 
-    var em = new EntryManager('entries', bg.links, bg.config);
-
-    document.getElementById('save').addEventListener('click', function(e){
-        bg.config.AddToClose = document.getElementById('close_tab').checked;
-        chrome.extension.sendMessage({
-            action: 'config.save'
-        });
-
-        chrome.tabs.getSelected(null, function(tab) {
-            em.add({ 'text': tab.title, 'url': tab.url }, function(){
-                if (bg.config.AddToClose)
-                    chrome.extension.sendMessage({ action: 'tab.current-close' });
-                em.filter(query.value.trim(), true);
+        document.getElementById('save').addEventListener('click', function(e){
+            config.AddToClose = document.getElementById('close_tab').checked;
+            chrome.runtime.sendMessage({
+                action: 'config.save',
+                config: config
             });
-        });
-    }, false);
 
-    var query = document.getElementById('query');
-    query.addEventListener('search', function(e) {
-        em.filter(query.value.trim());
-    }, false);
-    query.addEventListener('keydown', function(e) {
-        var noDefault = false;
-        switch (e.keyIdentifier) {
-            case 'Down':
-                em.select(+1);
-                noDefault = true;
-                break;
-            case 'Up':
-                em.select(-1);
-                noDefault = true;
-                break;
-            case 'U+007F':  // Delete
-                if (e.shiftKey) {
-                    em.removeCurrent();
+            chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+                var tab = tabs[0];
+                em.add({ 'text': tab.title, 'url': tab.url }, function(){
+                    if (config.AddToClose)
+                        chrome.runtime.sendMessage({ action: 'tab.current-close' });
+                    em.filter(query.value.trim(), true);
+                });
+            });
+        }, false);
+
+        var query = document.getElementById('query');
+        query.addEventListener('search', function(e) {
+            em.filter(query.value.trim());
+        }, false);
+        query.addEventListener('keydown', function(e) {
+            var noDefault = false;
+            switch (e.key) {
+                case 'ArrowDown':
+                    em.select(+1);
                     noDefault = true;
-                }
-                break;
-            case 'Enter':
-                em.openCurrent(e.shiftKey, !e.ctrlKey);
-                noDefault = true;
-                break;
-        }
-        if (noDefault)
-            e.preventDefault();
-    }, false);
+                    break;
+                case 'n':
+                    if (e.ctrlKey) {
+                        em.select(+1);
+                        noDefault = true;
+                    }
+                    break;
+                case 'ArrowUp':
+                    em.select(-1);
+                    noDefault = true;
+                    break;
+                case 'p':
+                    if (e.ctrlKey) {
+                        em.select(-1);
+                        noDefault = true;
+                    }
+                    break;
+                case 'Delete':
+                    if (e.shiftKey) {
+                        em.removeCurrent();
+                        noDefault = true;
+                    }
+                    break;
+                case 'Enter':
+                    em.openCurrent(e.shiftKey, !e.ctrlKey);
+                    noDefault = true;
+                    break;
+                case 'Escape':
+                    window.close();
+                    break;
+            }
+            if (noDefault)
+                e.preventDefault();
+        }, false);
 
-    if (bg.config.AddToClose) {
-        document.getElementById('close_tab').checked = true;
-    }
+        if (config.AddToClose) {
+            document.getElementById('close_tab').checked = true;
+        }
 
-    (function L10N(){
-        var labels = document.querySelectorAll('label')
-        for (var i = 0; i < labels.length; i++){
-            var message = chrome.i18n.getMessage('popup_label_' + labels[i].htmlFor);
-            if (message)
-                labels[i].innerHTML = message;
-        }
-        var buttons = document.querySelectorAll('input[type=button]')
-        for (var i = 0; i < buttons.length; i++){
-            var message = chrome.i18n.getMessage('popup_button_' + buttons[i].id);
-            if (message)
-                buttons[i].value = message;
-        }
-    })();
+        (function L10N(){
+            var labels = document.querySelectorAll('label');
+            for (var i = 0; i < labels.length; i++){
+                var message = chrome.i18n.getMessage('popup_label_' + labels[i].htmlFor);
+                if (message)
+                    labels[i].innerHTML = message;
+            }
+            var buttons = document.querySelectorAll('input[type=button]');
+            for (var i = 0; i < buttons.length; i++){
+                var message = chrome.i18n.getMessage('popup_button_' + buttons[i].id);
+                if (message)
+                    buttons[i].value = message;
+            }
+        })();
+    });
 }, false);
 

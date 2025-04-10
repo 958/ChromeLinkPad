@@ -13,26 +13,22 @@ body {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     border-color: hsl(0,0%,85%);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(188,200,144,1)), to(rgba(157,174,91,1)));
+    background-color: rgba(188,200,144,1);
     padding: 5px;
-    -webkit-box-shadow: 0px 1px 2px gray;
 }
 input[type=button]:hover,input[type=button]:active {
     background:#eee;
 }
 input[type=button] {
     margin: 0;
-    background-image: -webkit-gradient(linear, left top, left 25, from(#ddd), color-stop(6%, #eee), to(#ddd));
+    background-color: #ddd;
     border-width: 0px;
     padding: 4px 10px;
     border-radius: 3px;
-    -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,0.4);
     color: #111;
-/*  text-shadow: 0px 1px 1px white;*/
 }
 input[type=button]:active {
-    -webkit-box-shadow: -1px -1px 1px rgba(0,0,0,0.4);
-    background: -webkit-gradient(linear, left top, left 25, from(#eee), color-stop(6%, #ddd), to(#eee));
+    background: #eee;
 }
 #search {
     float:right;
@@ -65,7 +61,7 @@ input[type=button]:active {
 /*  -webkit-transition: 0.3s;*/
 }
 #entries>li:hover, #entries>li.current {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
+    background-image: rgba(255,255,255,0.8);
     border-color: hsl(0,0%,85%);
     background-color: hsl(0,0%,90%);
 /*  -webkit-transform-origin: 0 50%;*/
