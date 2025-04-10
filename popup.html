@@ -15,6 +15,8 @@ body {
     border-color: hsl(0,0%,85%);
     background-color: rgba(188,200,144,1);
     padding: 5px;
+    display: flex;
+    justify-content: space-between;
 }
 input[type=button]:hover,input[type=button]:active {
     background:#eee;
@@ -30,17 +32,12 @@ input[type=button] {
 input[type=button]:active {
     background: #eee;
 }
-#search {
-    float:right;
-}
-#search:after {
-    clear: both;
-}
 #query{
     width: 150px;
+    padding: 4px;
 }
 #entries {
-    width: 400px;
+    width: 500px;
     padding: 5px;
     margin: 2px 0 0 0;
     max-height: 500px;
@@ -57,19 +54,15 @@ input[type=button]:active {
 
 #entries>li {
     border-radius: 2px;
-    border: 1px solid rgba(255,255,255,0); /* transparent white */
-/*  -webkit-transition: 0.3s;*/
+    border: 1px solid rgba(255,255,255,0);
 }
 #entries>li:hover, #entries>li.current {
     background-image: rgba(255,255,255,0.8);
     border-color: hsl(0,0%,85%);
     background-color: hsl(0,0%,90%);
-/*  -webkit-transform-origin: 0 50%;*/
-/*  -webkit-transform: scale(1.1);*/
-/*  margin: 0 -5px;*/
 }
 #entries>li>a {
-    padding: 5px 5px 5px 20px;
+    padding: 5px 5px 5px 24px;
     background: no-repeat 2px 50%;
     display: block;
     text-decoration: none;
@@ -83,14 +76,81 @@ input[type=button]:active {
 #entries>li.hidden {
     display: none;
 }
+/* for Darkmode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #222;
+        color: #ddd;
+    }
+    #control {
+        background-color: rgb(69, 73, 52);
+        border-color: rgba(0,0,0,85%);
+        padding: 5px;
+    }
+    input[type=checkbox] {
+        position: relative;
+        cursor: pointer;
+        width: 14px;
+        height: 14px;
+        margin-top: -1px;
+        border-radius: 3px;
+        background-color: #222;
+        appearance: none;
+        vertical-align: middle;
+        transition: .3s;
+    }
+    input[type=checkbox]:checked {
+        border: none;
+        background-image: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect fill='%23000' width='16' height='16'/><path fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M12.6,5.17l-5.66,5.66L3.4,7.29'/></svg>");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    input[type=search]:focus {
+        background:#000;
+    }
+    input[type=search] {
+        background-color: #222;
+        color: #ddd;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    input[type=button] {
+        background-color: #222;
+        color: #ddd;
+    }
+    input[type=button]:hover,input[type=button]:active {
+        background:#000;
+    }
+    input[type=button] {
+        background-color: #222;
+        color: #ddd;
+    }
+    input[type=button]:active {
+        background: #333;
+    }
+    #entries>li {
+        border: 1px solid rgba(50,50,50,0);
+    }
+    #entries>li:hover, #entries>li.current {
+        background-color: rgba(59,59,59);
+        border-color: rgba(50,50,50);
+    }
+    #entries>li>a {
+        color: #888;
+    }
+    #entries>li:hover>a, #entries>li.current>a {
+        color: #eee;
+    }
+}
 </style>
 <script src="popup.js"></script>
 </head>
 <body>
 <div id="main">
   <div id="control">
-    <input id="save" type="button" value="Save this page" />
-    <input id="close_tab" type="checkbox"><label for="close_tab">Close tab</label>
+    <div>
+        <input id="save" type="button" value="Save this page" />
+        <input id="close_tab" type="checkbox"><label for="close_tab">Close tab</label>
+    </div>
     <div id="search">
       <input id="query" type="search" incremental results="0" autofocus />
     </div>

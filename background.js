@@ -77,7 +77,7 @@ function LoadLinks(){
     });
 }
 
-chrome.action.setBadgeBackgroundColor({ color: [128, 255, 0, 255] });
+chrome.action.setBadgeBackgroundColor({ color: '#7cb342' });
 
 const actions = {
     execute: function(req, sender, res) {
