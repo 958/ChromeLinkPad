@@ -1,208 +1,182 @@
-function EntryManager(id, links, config) {
-    this._config = config || {};
-    this._container = document.getElementById(id);
+// モダンなJavaScriptに書き換えを進めます。
 
-    if (links.length > 0) {
-        var self = this;
-        links.forEach(function(item){
-            self._items.push(self._addElm(item));
+class EntryManager {
+    constructor(id, links, config) {
+        this._config = config || {};
+        this._container = document.getElementById(id);
+        this._items = [];
+        this._prevQuery = '';
+
+        if (links.length > 0) {
+            links.forEach((item) => {
+                this._items.push(this._addElm(item));
+            });
+        }
+    }
+
+    _CURRENT_CLASS = 'current';
+    _HIDDEN_CLASS = 'hidden';
+
+    _open(link, focus) {
+        chrome.tabs.create({
+            url: link.href,
+            selected: focus
         });
     }
-}
-EntryManager.prototype = {
-    _CURRENT_CLASS: 'current',
-    _HIDDEN_CLASS: 'hidden',
-    _container: null,
-    _items: [],
-    _config: { },
-    _prevQuery: '',
-    _open: function(link, focus) {
-        chrome.tabs.create(
-            {
-                url: link.href,
-                selected: focus
-            }
-        );
-    },
-    _remove: function(link) {
+
+    _remove(link) {
         chrome.runtime.sendMessage({
             action: 'link.del',
             url: link.href
         });
         link.parentNode.parentNode.removeChild(link.parentNode);
         this._items.splice(this._items.indexOf(link.parentNode), 1);
-    },
-    add: function(item, cb) {
-        var self = this;
-        chrome.runtime.sendMessage(
-        {
+    }
+
+    add(item, cb) {
+        chrome.runtime.sendMessage({
             action: 'link.add',
             text: item.text,
             url: item.url
-        },
-        function(res){
-            if (res.status == 'success') {
-                self._items.push(self._addElm(item));
+        }, (res) => {
+            if (res.status === 'success') {
+                this._items.push(this._addElm(item));
                 if (cb) cb();
             }
         });
-    },
-    _addElm: function(item) {
+    }
+
+    _addElm(item) {
         const faviconUrl = new URL(chrome.runtime.getURL("/_favicon/"));
         faviconUrl.searchParams.set("pageUrl", item.url);
         faviconUrl.searchParams.set("size", "16");
 
-        var self = this;
-        var entry = document.createElement('li');
-        var link = document.createElement('a');
-        link.href = item.url;
-        link.textContent = item.text || item.url;
-        link.title = item.url;
-        link.target = '_blank';
-        link.style.backgroundImage = 'url(' + faviconUrl + ')';
+        const entry = document.createElement('li');
+        const linkElement = document.createElement('a');
+        linkElement.href = item.url;
+        linkElement.textContent = item.text || item.url;
+        linkElement.title = item.url;
+        linkElement.target = '_blank';
+        linkElement.style.backgroundImage = `url(${faviconUrl})`;
 
-        link.addEventListener('click', function(e){
-            var target = e.target;
-            self._open(target, (e.button != 1));
-            if (self._config.ToRemove && !e.ctrlKey)
-                self._remove(target);
+        linkElement.addEventListener('click', (e) => {
+            this._open(e.target, e.button !== 1);
+            if (this._config.ToRemove && !e.ctrlKey) this._remove(e.target);
             e.preventDefault();
-        }, false);
+        });
 
-        link.addEventListener('contextmenu', function(e){
-            self._remove(e.target);
+        linkElement.addEventListener('contextmenu', (e) => {
+            this._remove(e.target);
             e.preventDefault();
-        }, false);
+        });
 
-        entry.appendChild(link);
+        entry.appendChild(linkElement);
         this._container.appendChild(entry);
         return entry;
-    },
-    filter: function(q, deep) {
+    }
+
+    filter(q, deep = false) {
         if (deep) this._prevQuery = '';
-        if (this._prevQuery == q) return;
+        if (this._prevQuery === q) return;
         this._prevQuery = q;
-        q = q.toLowerCase().split(' ');
-        for (var i = 0; i < this._items.length; i++) {
-            var item = this._items[i];
-            var result = true;
-            for (var j = 0; j < q.length; j++) {
-                var text = q[j];
-                if (!text) break;
-                if (item.innerText.toLowerCase().indexOf(text) == -1) {
-                    result = false;
-                    break;
-                }
-            }
-            if (result == false)
-                item.classList.add(this._HIDDEN_CLASS);
-            else
-                item.classList.remove('hidden');
-        }
-        var cur = this.currentItem;
+        const queries = q.toLowerCase().split(' ');
+        this._items.forEach((item) => {
+            const result = queries.every((text) => !text || item.innerText.toLowerCase().includes(text));
+            item.classList.toggle(this._HIDDEN_CLASS, !result);
+        });
+        const cur = this.currentItem;
         if (cur) {
             cur.classList.remove(this._CURRENT_CLASS);
             window.scrollTo(0, 0);
         }
-    },
-    select: function(increment) {
-        var cur = this.currentIndex;
-        if (cur >= 0)
-            this._items[cur].classList.remove(this._CURRENT_CLASS);
-        for (var i = 0; i < this._items.length; i++) {
+    }
+
+    select(increment) {
+        let cur = this.currentIndex;
+        if (cur >= 0) this._items[cur].classList.remove(this._CURRENT_CLASS);
+        for (let i = 0; i < this._items.length; i++) {
             cur += increment;
             if (cur >= this._items.length) {
                 cur = 0;
             } else if (cur < 0) {
                 cur = this._items.length - 1;
             }
-            if (this._items[cur].classList.contains(this._HIDDEN_CLASS))
-                continue;
-            break;
+            if (!this._items[cur].classList.contains(this._HIDDEN_CLASS)) break;
         }
         this._items[cur].classList.add(this._CURRENT_CLASS);
         this._items[cur].scrollIntoView(false);
-    },
-    openCurrent: function(focus, remove) {
-        var cur = this.currentItem;
-        if (!cur) {
-            for (var i = 0; i < this._items.length; i++) {
-                if (!this._items[i].classList.contains(this._HIDDEN_CLASS)) {
-                    cur = this._items[i];
-                    break;
-                }
-            }
-        }
-        if (cur) {
-            cur = cur.querySelector('a');
-            if (cur) {
-                this._open(cur, focus);
-                if (this._config.ToRemove && remove)
-                    this._remove(cur);
-            }
-        }
-    },
-    removeCurrent: function() {
-        var cur = this.currentItem;
-        if (cur) {
-            cur = cur.querySelector('a');
-            if (cur)
-                this._remove(cur);
-        }
-    },
-    get currentIndex() {
-        for (var i = 0; i < this._items.length; i++) {
-            if (this._items[i].classList.contains(this._CURRENT_CLASS))
-                return i;
-        }
-        return -1;
-    },
-    get currentItem() {
-        var cur = this.currentIndex;
-        if (cur >= 0)
-            return this._items[cur];
-        else
-            return null;
     }
-};
 
-window.addEventListener('load', function(e){
+    openCurrent(focus, remove) {
+        let cur = this.currentItem;
+        if (!cur) {
+            cur = this._items.find((item) => !item.classList.contains(this._HIDDEN_CLASS));
+        }
+        if (cur) {
+            const linkElement = cur.querySelector('a');
+            if (linkElement) {
+                this._open(linkElement, focus);
+                if (this._config.ToRemove && remove) this._remove(linkElement);
+            }
+        }
+    }
+
+    removeCurrent() {
+        const cur = this.currentItem;
+        if (cur) {
+            const linkElement = cur.querySelector('a');
+            if (linkElement) this._remove(linkElement);
+        }
+    }
+
+    get currentIndex() {
+        return this._items.findIndex((item) => item.classList.contains(this._CURRENT_CLASS));
+    }
+
+    get currentItem() {
+        const cur = this.currentIndex;
+        return cur >= 0 ? this._items[cur] : null;
+    }
+}
+
+window.addEventListener('load', () => {
     chrome.runtime.sendMessage({ action: 'link.get' }, (res) => {
         const links = res.links || [];
         const config = res.config || {};
-        var em = new EntryManager('entries', res.links, res.config);
+        const em = new EntryManager('entries', links, config);
 
-        document.getElementById('save').addEventListener('click', function(e){
+        document.getElementById('save').addEventListener('click', () => {
             config.AddToClose = document.getElementById('close_tab').checked;
             chrome.runtime.sendMessage({
                 action: 'config.save',
-                config: config
+                config
             });
 
-            chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-                var tab = tabs[0];
-                em.add({ 'text': tab.title, 'url': tab.url }, function(){
-                    if (config.AddToClose)
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                const tab = tabs[0];
+                em.add({ text: tab.title, url: tab.url }, () => {
+                    if (config.AddToClose) {
                         chrome.runtime.sendMessage({ action: 'tab.current-close' });
+                    }
                     em.filter(query.value.trim(), true);
                 });
             });
-        }, false);
+        });
 
-        var query = document.getElementById('query');
-        query.addEventListener('search', function(e) {
+        const query = document.getElementById('query');
+        query.addEventListener('search', () => {
             em.filter(query.value.trim());
-        }, false);
-        query.addEventListener('keydown', function(e) {
-            var noDefault = false;
+        });
+        query.addEventListener('keydown', (e) => {
+            let noDefault = false;
             switch (e.key) {
                 case 'ArrowDown':
-                    em.select(+1);
+                    em.select(1);
                     noDefault = true;
                     break;
                 case 'n':
                     if (e.ctrlKey) {
-                        em.select(+1);
+                        em.select(1);
                         noDefault = true;
                     }
                     break;
@@ -230,28 +204,26 @@ window.addEventListener('load', function(e){
                     window.close();
                     break;
             }
-            if (noDefault)
-                e.preventDefault();
-        }, false);
+            if (noDefault) e.preventDefault();
+        });
 
         if (config.AddToClose) {
             document.getElementById('close_tab').checked = true;
         }
 
-        (function L10N(){
-            var labels = document.querySelectorAll('label');
-            for (var i = 0; i < labels.length; i++){
-                var message = chrome.i18n.getMessage('popup_label_' + labels[i].htmlFor);
-                if (message)
-                    labels[i].innerHTML = message;
-            }
-            var buttons = document.querySelectorAll('input[type=button]');
-            for (var i = 0; i < buttons.length; i++){
-                var message = chrome.i18n.getMessage('popup_button_' + buttons[i].id);
-                if (message)
-                    buttons[i].value = message;
-            }
+        (() => {
+            const labels = document.querySelectorAll('label');
+            labels.forEach((label) => {
+                const message = chrome.i18n.getMessage(`popup_label_${label.htmlFor}`);
+                if (message) label.innerHTML = message;
+            });
+
+            const buttons = document.querySelectorAll('input[type=button]');
+            buttons.forEach((button) => {
+                const message = chrome.i18n.getMessage(`popup_button_${button.id}`);
+                if (message) button.value = message;
+            });
         })();
     });
-}, false);
+});
 

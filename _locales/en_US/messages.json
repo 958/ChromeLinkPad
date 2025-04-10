@@ -7,5 +7,47 @@
 	},
 	"menu_AddLinkpadPageAndClose": {
 		"message": "Save this page to Link Pad and &close tab"
+	},
+	"option_label_ToRemove": {
+		"message": "Remove when opened"
+	},
+	"option_label_LinkMenuAdd": {
+		"message": "Save to Link Pad"
+	},
+	"option_label_DocumentMenuAdd": {
+		"message": "Save this page to Link Pad"
+	},
+	"option_label_DocumentMenuAddClose": {
+		"message": "Save this page to Link Pad and close tab"
+	},
+	"option_button_ResetLinks": {
+		"message": "Delete all links"
+	},
+	"option_button_ResetConfig": {
+		"message": "Reset configuration"
+	},
+	"option_title_TitleBasics": {
+		"message": "Basics"
+	},
+	"option_title_TitleAutoSave": {
+		"message": "Auto Save Settings"
+	},
+	"option_title_TitleAdvanced": {
+		"message": "Advanced"
+	},
+	"option_title_TitleContextMenus": {
+		"message": "Context Menus"
+	},
+	"option_legend_LinkMenu": {
+		"message": "Link Menu"
+	},
+	"option_legend_DocumentMenus": {
+		"message": "Document Menus"
+	},
+	"popup_button_save": {
+		"message": "Save to Link Pad"
+	},
+	"popup_label_close_tab": {
+		"message": "Close tab"
 	}
 }

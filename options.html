@@ -1,109 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Chrome Link Pad Option</title>
-<style>
-body{
-}
-#wrap {
-    /*width: 600px;*/
-    margin: 0 auto;
-}
-h1 {
-    border-radius: 3px;
-    background-color: rgba(188,200,144,1);
-    text-align: center;
-    color: white;
-    text-shadow: 1px 1px 1px #617122;
-    padding: 0.5em;
-}
-h2 {
-    font-size: 100%;
-    margin: 0 0 1em 0;
-    color: #617122;
-}
-div.group {
-    border-radius: 3px;
-    border: 1px solid #A1B162;
-    padding: 1em;
-    margin-bottom: 20px;
-}
-div.item {
-    margin-left: 1em;
-}
-.item {
-    margin-top: 1em;
-}
-fieldset {
-    border-radius: 3px;
-    border: 1px solid silver;
-}
-.value {
-    display: inline-block;
-    border-radius: 3px;
-    border: 1px solid silver;
-    width: 5em;
-    text-align: right;
-}
-#ExcludeURLs {
-    list-style-type: none;
-    padding-left: 0;
-}
-input.url {
-    width: 20em;
-}
-.tips {
-    color: gray;
-    display: block;
-}
-</style>
-<script src="options.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Link Pad Option</title>
+    <style>
+        body {
+        }
+        #wrap {
+            /*width: 600px;*/
+            margin: 0 auto;
+        }
+        h1 {
+            border-radius: 3px;
+            background-color: rgba(188,200,144,1);
+            text-align: center;
+            color: white;
+            text-shadow: 1px 1px 1px #617122;
+            padding: 0.5em;
+        }
+        h2 {
+            font-size: 100%;
+            margin: 0 0 1em 0;
+            color: #617122;
+        }
+        div.group {
+            border-radius: 3px;
+            border: 1px solid #A1B162;
+            padding: 1em;
+            margin-bottom: 20px;
+        }
+        div.item {
+            margin-left: 1em;
+        }
+        .item {
+            margin-top: 1em;
+        }
+        fieldset {
+            border-radius: 3px;
+            border: 1px solid silver;
+        }
+        .value {
+            display: inline-block;
+            border-radius: 3px;
+            border: 1px solid silver;
+            width: 5em;
+            text-align: right;
+        }
+        #ExcludeURLs {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        input.url {
+            width: 20em;
+        }
+        .tips {
+            color: gray;
+            display: block;
+        }
+    </style>
+    <script defer src="options.js"></script>
 </head>
 <body>
-  <div id="wrap">
-    <h1>Chrome Link Pad Option</h1>
-    <div id="general" class="group">
-      <h2 id="TitleBasics">Basics</h2>
-      <div class="item">
-        <input type="checkbox" id="ToRemove"><label for="ToRemove">Remove when opened.</label>
-      </div>
-<!--
-      <div class="item">
-        <input type="checkbox" id="UseBookmark"><label for="UseBookmark">Use bookmark.</label>
-        <span class="tips" iD="tips_UseBookmark">* Links are saved in the "Chrome Link Pad" folder in bookmarks, allowing you to synchronize it with other computers.</span>
-      </div>
--->
-    </div>
-    <div id="general" class="group">
-      <h2 id="TitleContextMenus">Context menus</h2>
-      <fieldset class="item">
-        <legend id="LinkMenu">
-          Link menu
-        </legend>
-        <div class="item">
-          <input type="checkbox" id="LinkMenuAdd"><label for="LinkMenuAdd">Save to Link Pad</label>
+    <div id="wrap">
+        <h1>Chrome Link Pad Option</h1>
+        <div id="general" class="group" role="region" aria-labelledby="TitleBasics">
+            <h2 id="TitleBasics">Basics</h2>
+            <div class="item">
+                <input type="checkbox" id="ToRemove" aria-label="Remove when opened">
+                <label for="ToRemove">Remove when opened.</label>
+            </div>
         </div>
-      </fieldset>
-      <fieldset class="item">
-        <legend id="DocumentMenus">
-          Document menus
-        </legend>
-        <div class="item">
-          <input type="checkbox" id="DocumentMenuAdd"><label for="DocumentMenuAdd">Save this page to Link Pad</label>
+        <div id="context-menus" class="group" role="region" aria-labelledby="TitleContextMenus">
+            <h2 id="TitleContextMenus">Context menus</h2>
+            <fieldset class="item">
+                <legend id="LinkMenu">Link menu</legend>
+                <div class="item">
+                    <input type="checkbox" id="LinkMenuAdd" aria-label="Save to Link Pad">
+                    <label for="LinkMenuAdd">Save to Link Pad</label>
+                </div>
+            </fieldset>
+            <fieldset class="item">
+                <legend id="DocumentMenus">Document menus</legend>
+                <div class="item">
+                    <input type="checkbox" id="DocumentMenuAdd" aria-label="Save this page to Link Pad">
+                    <label for="DocumentMenuAdd">Save this page to Link Pad</label>
+                </div>
+                <div class="item">
+                    <input type="checkbox" id="DocumentMenuAddClose" aria-label="Save this page to Link Pad and close tab">
+                    <label for="DocumentMenuAddClose">Save this page to Link Pad and close tab</label>
+                </div>
+            </fieldset>
         </div>
-        <div class="item">
-          <input type="checkbox" id="DocumentMenuAddClose"><label for="DocumentMenuAddClose">Save this page to Link Pad and close tab</label>
+        <div id="advanced" class="group" role="region" aria-labelledby="TitleAdvanced">
+            <h2 id="TitleAdvanced">Advanced</h2>
+            <div class="item">
+                <input type="button" id="ResetLinks" aria-label="Delete all links" value="Delete all links">
+                <input type="button" id="ResetConfig" aria-label="Reset configuration" value="Reset configuration">
+            </div>
         </div>
-      </fieldset>
     </div>
-    <div id="general" class="group">
-      <h2 id="TitleAdvanced">Advanced</h2>
-      <div class="item">
-        <input type="button" id="ResetLinks" value="Delete all links" />
-        <input type="button" id="ResetConfig" value="Reset configuration" />
-      </div>
-    </div>
-  </div>
 </body>
 </html>

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chrome Link Pad</title>
 <style>
 body {
     font-size: 10pt;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
 }
 #control {
     border-top-left-radius: 3px;
@@ -142,20 +143,21 @@ input[type=button]:active {
     }
 }
 </style>
-<script src="popup.js"></script>
+<script defer src="popup.js"></script>
 </head>
 <body>
 <div id="main">
-  <div id="control">
-    <div>
-        <input id="save" type="button" value="Save this page" />
-        <input id="close_tab" type="checkbox"><label for="close_tab">Close tab</label>
+    <div id="control" role="region" aria-label="Control Panel">
+        <div>
+            <input id="save" type="button" aria-label="Save this page" value="Save this page">
+            <input id="close_tab" type="checkbox" aria-label="Close tab">
+            <label for="close_tab">Close tab</label>
+        </div>
+        <div id="search">
+            <input id="query" type="search" incremental results="0" autofocus aria-label="Search entries">
+        </div>
     </div>
-    <div id="search">
-      <input id="query" type="search" incremental results="0" autofocus />
-    </div>
-  </div>
-  <ul id="entries" />
+    <ul id="entries" role="list" aria-label="Saved Entries"></ul>
 </div>
 </body>
 </html>

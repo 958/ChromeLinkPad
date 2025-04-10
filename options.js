@@ -1,79 +1,79 @@
-window.addEventListener('load', function(e){
+window.addEventListener('load', (e) => {
     chrome.runtime.sendMessage({ action: 'config.get' }, (bgConfig) => {
-        Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"]')).forEach(function(elm) {
+        Array.from(document.querySelectorAll('input[type="checkbox"]')).forEach((elm) => {
             elm.checked = bgConfig[elm.id];
-            elm.addEventListener('click', function(e){
+            elm.addEventListener('click', (e) => {
                 bgConfig[e.target.id] = e.target.checked;
                 chrome.runtime.sendMessage({
                     action: 'config.save',
                     config: bgConfig
                 });
-            }, false);
+            });
         });
-        Array.prototype.slice.call(document.querySelectorAll('input[type="range"]')).forEach(function(elm) {
+
+        Array.from(document.querySelectorAll('input[type="range"]')).forEach((elm) => {
             elm.value = bgConfig[elm.id];
-            var output = document.getElementById(elm.id + '_val');
+            const output = document.getElementById(`${elm.id}_val`);
             output.textContent = elm.value;
-            elm.addEventListener('change', function(e){
+            elm.addEventListener('change', (e) => {
                 bgConfig[e.target.id] = e.target.value;
                 output.textContent = e.target.value;
                 chrome.runtime.sendMessage({
                     action: 'config.save',
                     config: bgConfig
                 });
-            }, false);
+            });
         });
 
-        document.getElementById('ResetLinks').addEventListener('click', function(e) {
-            if (confirm('Are you sure you want to delete all of the saved links ?')) {
+        document.getElementById('ResetLinks').addEventListener('click', (e) => {
+            if (confirm('Are you sure you want to delete all of the saved links?')) {
                 chrome.runtime.sendMessage({
                     action: 'link.init'
                 });
             }
-        }, false);
+        });
 
-        document.getElementById('ResetConfig').addEventListener('click', function(e) {
-            if (confirm('Are sure you want to delete this config ?')) {
+        document.getElementById('ResetConfig').addEventListener('click', (e) => {
+            if (confirm('Are sure you want to delete this config?')) {
                 chrome.runtime.sendMessage({
                     action: 'config.init'
-                }, function(){
+                }, () => {
                     location.reload();
                 });
             }
-        }, false);
+        });
 
-        (function L10N(){
-            var labels = document.querySelectorAll('label');
-            for (var i = 0; i < labels.length; i++){
-                var message = chrome.i18n.getMessage('option_label_' + labels[i].htmlFor);
-                if (message)
-                    labels[i].innerHTML = message;
-            }
-            var buttons = document.querySelectorAll('input[type=button]');
-            for (var i = 0; i < buttons.length; i++){
-                var message = chrome.i18n.getMessage('option_button_' + buttons[i].id);
-                if (message)
-                    buttons[i].value = message;
-            }
-            var tips = document.querySelectorAll('span.tips');
-            for (var i = 0; i < tips.length; i++){
-                var message = chrome.i18n.getMessage('option_' + tips[i].id);
-                if (message)
-                    tips[i].innerHTML = message;
-            }
-            var titles = document.querySelectorAll('h2');
-            for (var i = 0; i < titles.length; i++){
-                var message = chrome.i18n.getMessage('option_title_' + titles[i].id);
-                if (message)
-                    titles[i].innerHTML = message;
-            }
-            var legends = document.querySelectorAll('legend');
-            for (var i = 0; i < legends.length; i++){
-                var message = chrome.i18n.getMessage('option_legend_' + legends[i].id);
-                if (message)
-                    legends[i].textContent = message;
-            }
+        (() => {
+            const labels = document.querySelectorAll('label');
+            labels.forEach((label) => {
+                const message = chrome.i18n.getMessage(`option_label_${label.htmlFor}`);
+                if (message) label.innerHTML = message;
+            });
+
+            const buttons = document.querySelectorAll('input[type=button]');
+            buttons.forEach((button) => {
+                const message = chrome.i18n.getMessage(`option_button_${button.id}`);
+                if (message) button.value = message;
+            });
+
+            const tips = document.querySelectorAll('span.tips');
+            tips.forEach((tip) => {
+                const message = chrome.i18n.getMessage(`option_${tip.id}`);
+                if (message) tip.innerHTML = message;
+            });
+
+            const titles = document.querySelectorAll('h2');
+            titles.forEach((title) => {
+                const message = chrome.i18n.getMessage(`option_title_${title.id}`);
+                if (message) title.innerHTML = message;
+            });
+
+            const legends = document.querySelectorAll('legend');
+            legends.forEach((legend) => {
+                const message = chrome.i18n.getMessage(`option_legend_${legend.id}`);
+                if (message) legend.textContent = message;
+            });
         })();
     });
-}, false);
+});
 
