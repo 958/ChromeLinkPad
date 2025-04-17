@@ -172,9 +172,9 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 chrome.commands.onCommand.addListener(function (command) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const tab = tabs[0];
-        if (info.menuItemId === 'documentAdd') {
+        if (command === 'documentAdd') {
             actions.execute({ action: 'link.add', text: tab.title, url: tab.url });
-        } else if (info.menuItemId === 'documentAddClose') {
+        } else if (command === 'documentAddClose') {
             actions.execute({ action: 'link.add', text: tab.title, url: tab.url });
             actions.execute({ action: 'tab.current-close' });
         }
