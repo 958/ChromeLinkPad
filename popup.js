@@ -104,7 +104,7 @@ class EntryManager {
             if (!this._items[cur].classList.contains(this._HIDDEN_CLASS)) break;
         }
         this._items[cur].classList.add(this._CURRENT_CLASS);
-        this._items[cur].scrollIntoView(false);
+        this._items[cur].scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     openCurrent(focus, remove) {
