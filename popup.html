@@ -1,163 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chrome Link Pad</title>
-<style>
-body {
-    font-size: 10pt;
-    margin: 0;
-    padding: 0;
-}
-#control {
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-color: hsl(0,0%,85%);
-    background-color: rgba(188,200,144,1);
-    padding: 5px;
-    display: flex;
-    justify-content: space-between;
-}
-input[type=button]:hover,input[type=button]:active {
-    background:#eee;
-}
-input[type=button] {
-    margin: 0;
-    background-color: #ddd;
-    border-width: 0px;
-    padding: 4px 10px;
-    border-radius: 3px;
-    color: #111;
-}
-input[type=button]:active {
-    background: #eee;
-}
-#query{
-    width: 150px;
-    padding: 4px;
-}
-#entries {
-    width: 500px;
-    padding: 5px;
-    margin: 2px 0 0 0;
-    max-height: 500px;
-    overflow: auto;
-    list-style-type: none;
-    list-style-position: inside;
-}
-#entries:empty {
-    text-align: center;
-}
-#entries:empty:after {
-/*  content: 'no item';*/
-}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
+    <title>Chrome Link Pad</title>
+    <style>
+        :root {
+            --primary-color: rgba(188,200,144,1);
+            --border-color: hsl(0,0%,85%);
+            --text-color: #555;
+            --hover-color: hsl(0,0%,90%);
+            --button-bg: #ddd;
+            --button-hover: #eee;
+        }
 
-#entries>li {
-    border-radius: 2px;
-    border: 1px solid rgba(255,255,255,0);
-}
-#entries>li:hover, #entries>li.current {
-    background-image: rgba(255,255,255,0.8);
-    border-color: hsl(0,0%,85%);
-    background-color: hsl(0,0%,90%);
-}
-#entries>li>a {
-    padding: 5px 5px 5px 24px;
-    background: no-repeat 2px 50%;
-    display: block;
-    text-decoration: none;
-    color: #555;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-#entries>li:hover>a, #entries>li.current>a {
-    color: black;
-}
-#entries>li.hidden {
-    display: none;
-}
-/* for Darkmode */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: #222;
-        color: #ddd;
-    }
-    #control {
-        background-color: rgb(69, 73, 52);
-        border-color: rgba(0,0,0,85%);
-        padding: 5px;
-    }
-    input[type=checkbox] {
-        position: relative;
-        cursor: pointer;
-        width: 14px;
-        height: 14px;
-        margin-top: -1px;
-        border-radius: 3px;
-        background-color: #222;
-        appearance: none;
-        vertical-align: middle;
-        transition: .3s;
-    }
-    input[type=checkbox]:checked {
-        border: none;
-        background-image: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect fill='%23000' width='16' height='16'/><path fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M12.6,5.17l-5.66,5.66L3.4,7.29'/></svg>");
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
-    input[type=search]:focus {
-        background:#000;
-    }
-    input[type=search] {
-        background-color: #222;
-        color: #ddd;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-    input[type=button] {
-        background-color: #222;
-        color: #ddd;
-    }
-    input[type=button]:hover,input[type=button]:active {
-        background:#000;
-    }
-    input[type=button] {
-        background-color: #222;
-        color: #ddd;
-    }
-    input[type=button]:active {
-        background: #333;
-    }
-    #entries>li {
-        border: 1px solid rgba(50,50,50,0);
-    }
-    #entries>li:hover, #entries>li.current {
-        background-color: rgba(59,59,59);
-        border-color: rgba(50,50,50);
-    }
-    #entries>li>a {
-        color: #888;
-    }
-    #entries>li:hover>a, #entries>li.current>a {
-        color: #eee;
-    }
-}
-</style>
-<script defer src="popup.js"></script>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: rgb(69, 73, 52);
+                --border-color: rgba(50,50,50,1);
+                --text-color: #888;
+                --hover-color: rgba(59,59,59,1);
+                --button-bg: #222;
+                --button-hover: #333;
+            }
+        }
+
+        body {
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+            width: 500px;
+            background-color: var(--bg-color, #fff);
+            color: var(--text-color, #333);
+        }
+
+        #control {
+            border-color: var(--border-color);
+            background-color: var(--primary-color);
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type=button] {
+            margin: 0;
+            background-color: var(--button-bg);
+            border: none;
+            padding: 4px 10px;
+            border-radius: 3px;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        input[type=button]:hover,
+        input[type=button]:focus {
+            background: var(--button-hover);
+            outline: 2px solid var(--border-color);
+        }
+
+        input[type=button]:active {
+            background: var(--button-hover);
+        }
+
+        #query {
+            width: 150px;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            background-color: var(--input-bg, #fff);
+            color: inherit;
+        }
+
+        #query:focus {
+            outline: 2px solid var(--border-color);
+        }
+
+        #entries {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            max-height: 500px;
+            overflow: auto;
+            list-style-type: none;
+            list-style-position: inside;
+        }
+
+        #entries:empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        #entries>li {
+            border-radius: 2px;
+            border: 1px solid transparent;
+            padding: 0 5px;
+        }
+
+        #entries>li:hover {
+            background-color: var(--hover-color);
+            border-color: var(--border-color);
+        }
+
+        #entries>li.current {
+            background-color: var(--hover-color);
+            border-color: var(--primary-color);
+            border-width: 2px;
+        }
+
+        #entries>li>a {
+            padding: 5px 5px 5px 24px;
+            background: no-repeat 2px 50%;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #entries>li.hidden {
+            display: none;
+        }
+
+        /* Focus display improvements */
+        *:focus {
+            outline: none;
+        }
+
+        /* Dark mode styles */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #222;
+                color: #ddd;
+                color-scheme: dark;
+            }
+
+            #query {
+                background-color: #222;
+                color: #ddd;
+                border: 1px solid rgba(255,255,255,0.2);
+            }
+
+            #query:focus {
+                background: #000;
+                outline: 2px solid rgba(255,255,255,0.2);
+            }
+        }
+
+    </style>
 </head>
 <body>
-<div id="main">
-    <div id="control" role="region" aria-label="Control Panel">
-        <div>
-            <input id="save" type="button" aria-label="Save this page" value="Save this page">
-            <input id="close_tab" type="checkbox" aria-label="Close tab">
-            <label for="close_tab">Close tab</label>
+    <div id="main">
+        <div id="control" role="region" aria-label="Control Panel">
+            <div>
+                <input id="save" type="button" aria-label="Save this page" value="Save this page">
+                <input id="close_tab" type="checkbox" aria-label="Close tab">
+                <label for="close_tab">Close tab</label>
+            </div>
+            <div id="search">
+                <input id="query" type="search" incremental results="0" autofocus 
+                       aria-label="Search entries">
+            </div>
         </div>
-        <div id="search">
-            <input id="query" type="search" incremental results="0" autofocus aria-label="Search entries">
-        </div>
+        <ul id="entries" role="list" aria-label="Saved Entries"></ul>
     </div>
-    <ul id="entries" role="list" aria-label="Saved Entries"></ul>
-</div>
+    <script src="popup.js"></script>
 </body>
 </html>
